@@ -140,6 +140,14 @@ tr.clickable:hover td{background:#F7F8F6;}
 // รูปแบบ "https://script.google.com/macros/s/xxxxx/exec" — ปล่อยว่างไว้ถ้ายังใช้งานผ่านอาร์ติแฟกต์ของ Claude เท่านั้น
 const API_BASE = "https://script.google.com/macros/s/AKfycbwVAvbbbpOD2lc9sUa4sQvfC0YGY5CDlBVgj_rMMU7YMRFK76DbYOxmkSrY4jurBu5-/exec";
 
+// URL สาธารณะของหน้าเว็บนี้เอง (หลังจากอัปโหลดขึ้น GitHub Pages / Cloudflare Pages แล้ว) ใช้สำหรับสร้างลิงก์ในอีเมลแจ้งเตือนให้กดเปิดได้จากทุกเครื่อง
+// ตัวอย่าง "https://username.github.io/work-permit/" — ถ้าปล่อยว่างไว้ ระบบจะใช้ที่อยู่ปัจจุบันของเบราว์เซอร์แทน (ใช้ไม่ได้ถ้าเปิดไฟล์ .html จากเครื่องตัวเอง)
+const PUBLIC_URL = "https://sengsavanhkeomanivanh87-max.github.io/work-permit/";
+function getAppBaseUrl(){
+  if(PUBLIC_URL) return PUBLIC_URL.replace(/\/$/, '') + '/';
+  return window.location.origin + window.location.pathname;
+}
+
 function hasBuiltinStorage(){ return typeof window.storage !== "undefined" && window.storage !== null; }
 
 const storageAdapter = {
@@ -345,7 +353,7 @@ async function notifyStage(permit, stageKey){
           headers: { "Content-Type": "text/plain;charset=utf-8" }, // หลีกเลี่ยง CORS preflight เช่นเดียวกับ storageAdapter.set
           body: JSON.stringify({
             action: "notify", to: recipient, subject, body,
-            link: window.location.origin + window.location.pathname + `?permit=${encodeURIComponent(permit.id)}&role=${encodeURIComponent(stageKey)}`,
+            link: getAppBaseUrl() + `?permit=${encodeURIComponent(permit.id)}&role=${encodeURIComponent(stageKey)}`,
             photo: getRelevantPhotoForStage(permit, stageKey)
           })
         });
