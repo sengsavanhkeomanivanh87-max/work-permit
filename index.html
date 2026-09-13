@@ -490,6 +490,13 @@ async function decide(permit, decision, comment, photoDataUrl){
   render();
 }
 
+async function deletePermit(permitId){
+  state.permits = state.permits.filter(p=>p.id!==permitId);
+  await savePermits();
+  showToast("ลบใบขออนุญาตนี้แล้ว");
+  setState({detailId:null});
+}
+
 /* ---------------- JSA row helpers ---------------- */
 function jsaRowHtml(step, hazard, control){
   return `<tr>
@@ -926,9 +933,23 @@ function mountDetail(permit){
         <button class="btn btn-danger" id="rejectBtn">ไม่อนุมัติ</button>
       </div>
     </div>` : ''}
+    ${state.role==='admin' ? `
+    <div class="card" style="margin-top:10px;border-color:#E3C1B3;">
+      <h3 style="margin-top:0;font-size:14px;color:var(--danger);">โซนอันตราย (สำหรับผู้ดูแลระบบ)</h3>
+      <p class="hint" style="margin-top:0;">ใช้สำหรับลบข้อมูลทดสอบที่ค้างอยู่ การลบไม่สามารถกู้คืนได้</p>
+      <button type="button" class="btn btn-danger" id="deletePermitBtn">🗑 ลบใบขออนุญาตนี้ทิ้ง</button>
+    </div>` : ''}
   `;
 
   inner.querySelector('#closeModal').onclick = ()=>setState({detailId:null});
+
+  const deleteBtn = inner.querySelector('#deletePermitBtn');
+  if(deleteBtn){
+    deleteBtn.onclick = async ()=>{
+      if(!confirm(`ยืนยันลบใบขออนุญาต ${permit.code} ทิ้งอย่างถาวร?\n(การลบนี้กู้คืนไม่ได้)`)) return;
+      await deletePermit(permit.id);
+    };
+  }
 
   if(canAct){
     inner.querySelector('#approveBtn').onclick = async ()=>{
