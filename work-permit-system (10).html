@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบขออนุญาตทำงาน — บริษัท น้ำตาลมิตรลาว จำกัด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Inter:ital@1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1EF;
+  --surface:#FFFFFF;
+  --ink:#16232B;
+  --ink-muted:#5B6B70;
+  --line:#D6DDDA;
+  --accent:#C98A1F;
+  --accent-ink:#4A3510;
+  --accent-bg:#FBEED4;
+  --success:#2E6E49;
+  --success-bg:#E1F0E6;
+  --danger:#A73B22;
+  --danger-bg:#F7E5DE;
+  --wait:#5B6B70;
+  --wait-bg:#E7EAE9;
+  --radius:3px;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;line-height:1.55;}
+h1,h2,h3,.label-font{font-family:'Oswald',sans-serif;letter-spacing:.01em;}
+button{font-family:'Inter',sans-serif;cursor:pointer;}
+input,select,textarea{font-family:'Inter',sans-serif;}
+
+.app{display:flex;min-height:100vh;}
+.sidebar{width:230px;flex:0 0 230px;background:var(--ink);color:#EAEDEC;padding:22px 16px;display:flex;flex-direction:column;gap:22px;}
+.sidebar .brand{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;line-height:1.25;border-bottom:2px solid var(--accent);padding-bottom:14px;}
+.sidebar .brand-row{display:flex;align-items:center;gap:10px;}
+.sidebar .brand-logo{width:36px;height:36px;border-radius:8px;background:#fff;padding:3px;object-fit:contain;box-shadow:0 1px 3px rgba(0,0,0,.35);flex:0 0 auto;}
+.sidebar .brand small{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:11px;color:#9FAEB2;margin-top:8px;letter-spacing:.02em;line-height:1.4;}
+.nav-item{display:block;width:100%;text-align:left;background:transparent;border:none;color:#C7D0CE;padding:10px 10px;border-radius:var(--radius);font-size:13.5px;font-weight:500;}
+.nav-item:hover{background:#22333D;color:#fff;}
+.nav-item.active{background:var(--accent);color:var(--accent-ink);font-weight:600;}
+.nav-item .count{float:right;background:rgba(255,255,255,.15);padding:1px 7px;border-radius:20px;font-size:11px;}
+.nav-item.active .count{background:rgba(0,0,0,.12);}
+
+.identity-box{margin-top:auto;border-top:1px solid #2A3B45;padding-top:14px;font-size:12px;color:#9FAEB2;}
+.identity-box select,.identity-box input{width:100%;margin-top:5px;margin-bottom:8px;background:#1E2E37;border:1px solid #2E4048;color:#EAEDEC;padding:7px 8px;border-radius:var(--radius);font-size:12.5px;}
+.identity-box label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#7C8D91;}
+
+.main{flex:1;padding:28px 34px;max-width:1120px;}
+.pagehead{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:14px;}
+.pagehead h1{font-size:24px;margin:0;font-weight:600;}
+.pagehead p{margin:4px 0 0;color:var(--ink-muted);font-size:13px;}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 2px rgba(22,35,43,.04);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;}
+@media(max-width:720px){.grid2,.grid3,.grid4{grid-template-columns:1fr;}.main{padding:18px;}.app{flex-direction:column;}.sidebar{width:100%;flex:none;flex-direction:row;flex-wrap:wrap;align-items:center;}.identity-box{margin-top:0;border-top:none;flex-basis:100%;}}
+
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-muted);margin-bottom:5px;}
+.field input[type=text],.field input[type=date],.field input[type=time],.field input[type=number],.field select,.field textarea{
+  width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:var(--radius);font-size:13.5px;background:#fff;color:var(--ink);
+}
+.field textarea{resize:vertical;min-height:64px;}
+.checkrow{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:13.5px;}
+.checkrow input{margin-top:3px;}
+.checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:2px 18px;}
+@media(max-width:720px){.checkgrid{grid-template-columns:1fr;}}
+
+.btn{display:inline-block;padding:10px 18px;border-radius:var(--radius);border:1px solid transparent;font-size:13.5px;font-weight:600;}
+.btn-primary{background:var(--accent);color:var(--accent-ink);}
+.btn-primary:hover{background:#B87D18;}
+.btn-outline{background:#fff;border:1px solid var(--line);color:var(--ink);}
+.btn-outline:hover{border-color:var(--ink);}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid #E3C1B3;}
+.btn-danger:hover{background:#F0D3C6;}
+.btn-success{background:var(--success-bg);color:var(--success);border:1px solid #BEDCC7;}
+.btn-success:hover{background:#D1E9D9;}
+.btn[disabled]{opacity:.45;cursor:not-allowed;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-muted);border-bottom:2px solid var(--line);padding:8px 10px;font-weight:600;}
+td{padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+tr.clickable{cursor:pointer;}
+tr.clickable:hover td{background:#F7F8F6;}
+
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.badge-wait{background:var(--wait-bg);color:var(--wait);}
+.badge-accent{background:var(--accent-bg);color:var(--accent-ink);}
+.badge-success{background:var(--success-bg);color:var(--success);}
+.badge-danger{background:var(--danger-bg);color:var(--danger);}
+
+.stepper{display:flex;margin:6px 0 22px;}
+.step{flex:1;text-align:center;position:relative;font-size:12px;color:var(--ink-muted);}
+.step .dot{width:26px;height:26px;border-radius:50%;background:var(--wait-bg);color:var(--wait);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-weight:700;font-size:12px;border:2px solid var(--line);}
+.step.done .dot{background:var(--success);color:#fff;border-color:var(--success);}
+.step.current .dot{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+.step.rejected .dot{background:var(--danger);color:#fff;border-color:var(--danger);}
+.step::after{content:'';position:absolute;top:13px;left:calc(50% + 18px);width:calc(100% - 36px);height:2px;background:var(--line);z-index:-1;}
+.step:last-child::after{display:none;}
+.step.done::after{background:var(--success);}
+
+.empty{text-align:center;padding:50px 20px;color:var(--ink-muted);}
+.empty h3{color:var(--ink);margin-bottom:6px;}
+
+.modal-bg{position:fixed;inset:0;background:rgba(15,25,30,.55);display:flex;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;z-index:50;}
+.modal{background:#fff;border-radius:var(--radius);max-width:640px;width:100%;padding:26px 28px;margin-bottom:40px;}
+.modal-close{float:right;background:none;border:none;font-size:20px;color:var(--ink-muted);cursor:pointer;line-height:1;}
+
+.approval-log{border-left:2px solid var(--line);padding-left:14px;margin-top:6px;}
+.approval-entry{margin-bottom:14px;}
+.approval-entry .who{font-weight:600;font-size:13px;}
+.approval-entry .meta{font-size:11.5px;color:var(--ink-muted);}
+.approval-entry img{max-width:220px;border-radius:var(--radius);margin-top:6px;border:1px solid var(--line);display:block;}
+.approval-entry p{margin:5px 0 0;font-size:13px;}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:var(--radius);font-size:13px;max-width:340px;z-index:100;box-shadow:0 6px 18px rgba(0,0,0,.2);}
+.notice{background:var(--accent-bg);border:1px solid #E9C989;color:var(--accent-ink);padding:10px 14px;border-radius:var(--radius);font-size:12.5px;margin-bottom:16px;}
+.hint{font-size:11.5px;color:var(--ink-muted);margin-top:3px;}
+.req{color:var(--danger);}
+.code-tag{font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.02em;}
+.jsa-input{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:var(--radius);font-size:13px;background:#fff;color:var(--ink);}
+.jsaRemove{background:none;border:none;color:var(--danger);font-size:17px;cursor:pointer;line-height:1;padding:2px 4px;}
+.jsaRemove:hover{background:var(--danger-bg);border-radius:var(--radius);}
+#jsaTable td, #jsaTable th{padding:6px 6px;}
+#jsaTable .jsaNum{text-align:center;color:var(--ink-muted);font-size:12.5px;}
+.jsa-view-table td, .jsa-view-table th{padding:7px 9px;font-size:12.5px;}
+.storage-warn{background:var(--danger-bg);color:var(--danger);border-bottom:1px solid #E3C1B3;padding:10px 20px;font-size:12.5px;font-weight:600;}
+.backup-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px;}
+.datadict{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;}
+.datadict th,.datadict td{border:1px solid var(--line);padding:8px 10px;text-align:left;}
+.datadict th{background:#F7F8F6;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* ---------------- constants ---------------- */
+// URL ของ Google Apps Script Web App — ตอนนี้ใช้แค่สำหรับ "ส่งอีเมลแจ้งเตือน" เท่านั้น
+// (ข้อมูลย้ายไปเก็บที่ Supabase แล้ว เพราะ Apps Script Web App ไม่เสถียรพอสำหรับการอ่าน/เขียนข้อมูลบ่อยๆ)
+const API_BASE = "https://script.google.com/macros/s/AKfycbwVAvbbbpOD2lc9sUa4sQvfC0YGY5CDlBVgj_rMMU7YMRFK76DbYOxmkSrY4jurBu5-/exec";
+
+// Supabase — ที่เก็บข้อมูลหลักของระบบ (การตั้งค่า + ใบขออนุญาตทั้งหมด + รูปภาพ)
+const SUPABASE_URL = "https://fjtrxifebljrwzbjnppl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_bS4gGhBXLff_BuqnLfmhcw_55H3dfVM";
+
+// URL สาธารณะของหน้าเว็บนี้เอง (หลังจากอัปโหลดขึ้น GitHub Pages / Cloudflare Pages แล้ว) ใช้สำหรับสร้างลิงก์ในอีเมลแจ้งเตือนให้กดเปิดได้จากทุกเครื่อง
+// ตัวอย่าง "https://username.github.io/work-permit/" — ถ้าปล่อยว่างไว้ ระบบจะใช้ที่อยู่ปัจจุบันของเบราว์เซอร์แทน (ใช้ไม่ได้ถ้าเปิดไฟล์ .html จากเครื่องตัวเอง)
+const LOGO_DATA_URL = "data:image/jpeg;base64,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";
+
+// ใช้โลโก้เดียวกันเป็นไอคอนแท็บเบราว์เซอร์ (favicon) ด้วย
+(function setFavicon(){
+  const link = document.createElement("link");
+  link.rel = "icon";
+  link.href = LOGO_DATA_URL;
+  document.head.appendChild(link);
+})();
+
+const PUBLIC_URL = "https://sengsavanhkeomanivanh87-max.github.io/work-permit/";
+function getAppBaseUrl(){
+  if(PUBLIC_URL) return PUBLIC_URL.replace(/\/$/, '') + '/';
+  return window.location.origin + window.location.pathname;
+}
+
+function hasBuiltinStorage(){ return typeof window.storage !== "undefined" && window.storage !== null; }
+
+function sleep(ms){ return new Promise(res=>setTimeout(res, ms)); }
+
+// ตัวช่วย fetch ที่ลองใหม่อัตโนมัติและไม่รอค้างไม่มีที่สิ้นสุด (เผื่อเน็ตสะดุดชั่วคราว)
+async function fetchWithRetry(url, options, retries){
+  retries = retries===undefined ? 2 : retries;
+  let lastErr;
+  for(let attempt=0; attempt<=retries; attempt++){
+    const controller = new AbortController();
+    const timeoutId = setTimeout(()=>controller.abort(), 8000); // ไม่รอเกิน 8 วิ/รอบ กันค้างไม่มีที่สิ้นสุด
+    try{
+      const resp = await fetch(url, {...(options||{}), signal: controller.signal});
+      clearTimeout(timeoutId);
+      if(!resp.ok) throw new Error("http " + resp.status);
+      return resp;
+    }catch(e){
+      clearTimeout(timeoutId);
+      lastErr = e;
+      if(attempt<retries) await sleep(600 * (attempt+1)); // หน่วงเพิ่มขึ้นทีละรอบก่อนลองใหม่
+    }
+  }
+  throw lastErr;
+}
+
+function sbHeaders(extra){
+  return Object.assign({
+    "apikey": SUPABASE_KEY,
+    "Authorization": "Bearer " + SUPABASE_KEY,
+    "Content-Type": "application/json"
+  }, extra||{});
+}
+
+const storageAdapter = {
+  async get(key, shared){
+    if(SUPABASE_URL){
+      try{
+        const resp = await fetchWithRetry(
+          `${SUPABASE_URL}/rest/v1/kv_store?key=eq.${encodeURIComponent(key)}&select=value`,
+          { headers: sbHeaders() }
+        );
+        const rows = await resp.json();
+        if(!rows.length || rows[0].value === null || rows[0].value === undefined) throw new Error("not found");
+        return { key, value: rows[0].value, shared };
+      }catch(e){
+        if(hasBuiltinStorage()) return window.storage.get(key, shared);
+        throw e;
+      }
+    }
+    return window.storage.get(key, shared);
+  },
+  async set(key, value, shared){
+    if(SUPABASE_URL){
+      try{
+        await fetchWithRetry(
+          `${SUPABASE_URL}/rest/v1/kv_store?on_conflict=key`,
+          {
+            method: "POST",
+            headers: sbHeaders({ "Prefer": "resolution=merge-duplicates,return=minimal" }),
+            body: JSON.stringify({ key, value, updated_at: new Date().toISOString() })
+          }
+        );
+        return { ok: true };
+      }catch(e){
+        if(hasBuiltinStorage()) return window.storage.set(key, value, shared);
+        throw e;
+      }
+    }
+    return window.storage.set(key, value, shared);
+  }
+};
+
+/* ---------------- อัปโหลดรูปภาพขึ้น Supabase Storage ---------------- */
+function dataUrlToBlobClient(dataUrl){
+  const [meta, b64] = dataUrl.split(",");
+  const mime = meta.match(/:(.*?);/)[1];
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+async function uploadPhotoToSupabase(dataUrl, filename){
+  const blob = dataUrlToBlobClient(dataUrl);
+  const path = `permits/${Date.now()}_${Math.random().toString(36).slice(2,8)}_${filename}`;
+  await fetchWithRetry(`${SUPABASE_URL}/storage/v1/object/photos/${path}`, {
+    method: "POST",
+    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": blob.type || "image/jpeg" },
+    body: blob
+  });
+  return `${SUPABASE_URL}/storage/v1/object/public/photos/${path}`;
+}
+
+// อัปโหลดรูปหลายรูปพร้อมกัน (ไปที่ Supabase Storage โดยตรง ไม่ผ่าน Apps Script แล้ว) คืนค่าเป็น array ของลิงก์รูป
+async function uploadPhotosAndGetUrls(dataUrls, namePrefix){
+  return Promise.all(dataUrls.map((d,i)=>uploadPhotoToSupabase(d, `${namePrefix}_${i}.jpg`)));
+}
+
+const DEPARTMENTS = [
+  "ลูกหีบ","หม้อไอน้ำ","ไฟฟ้าผลิต","หม้อต้ม","หม้อเคี่ยว","หม้อปั่น",
+  "ซ่อมบำรุงเครื่องกล","ซ่อมบำรุงไฟฟ้า","เครื่องมือควบคุม","เก็บเกี่ยว",
+  "คลังสินค้าและห้องชั่ง","เครื่องมือเกษตร","งานโยธา","พัสดุ","วิเคราะห์","อื่นๆ"
+];
+
+const CONTRACTOR_COMPANIES = [
+  "มิตรลาว",
+  "บริษัท เรียลโซลูพลัส จำกัด",
+  "บริษัท โอบบุญ เอ็นจิเนียริ่ง",
+  "บริษัท พศุตม์ เอ็นเตอร์ไพรส์",
+  "บริษัท เอ็กซ์ซอน เอ็นจิเนียริ่ง",
+  "บริษัท นำแพง เอ็นจิเนียริ่ง",
+  "บริษัท พลูโตเทค",
+  "บริษัท กล้องเกลียด",
+  "บริษัท คำหล้า",
+  "บริษัท นาวิน เน็ตเวิร์ค เซอร์วิส",
+  "บริษัท สีท่ามะลาด",
+  "บริษัท เอสบี",
+  "บริษัท เคเอ็ม เทค"
+];
+const OTHER_COMPANY_VALUE = "__other__";
+
+const PERMIT_TYPES = [
+  {id:"general", label:"งานทั่วไป (Cold Work)"},
+  {id:"hotwork", label:"งานเชื่อม/ตัด/ก่อประกายไฟ (Hot Work)"},
+  {id:"confined", label:"งานในที่อับอากาศ (Confined Space)"},
+  {id:"height", label:"งานบนที่สูง (Working at Height)"},
+  {id:"electrical", label:"งานไฟฟ้า / ตัดแยกระบบไฟฟ้า (Electrical / LOTO)"},
+  {id:"excavation", label:"งานขุดดิน (Excavation)"},
+  {id:"chemical", label:"งานเกี่ยวกับสารเคมีอันตราย (Hazardous Chemical)"},
+  {id:"lifting", label:"งานยกของ / ใช้เครน (Lifting / Crane)"},
+  {id:"rotating", label:"งานใกล้เครื่องจักรหมุน (Rotating Equipment)"},
+  {id:"other", label:"อื่นๆ (ระบุ)"}
+];
+
+const PPE_LIST = ["หมวกนิรภัย","แว่นตานิรภัย","ถุงมือ","รองเท้านิรภัย","เข็มขัดนิรภัย/สายรัดกันตก","หน้ากากกรองฝุ่น/แก๊ส","ชุดป้องกันความร้อน/ประกายไฟ","ที่อุดหูลดเสียง"];
+
+// รายการมาตรการควบคุมความเสี่ยงมาตรฐานของแต่ละประเภทงาน (ใช้แนะนำอัตโนมัติใน JSA)
+// risk = ระดับความเสี่ยงเริ่มต้นของงานประเภทนี้ก่อนมีมาตรการควบคุม (1=ต่ำสุด, 5=สูงสุด)
+const JSA_CHECKLIST_BY_TYPE = {
+  general:    { risk:1, items:["ตรวจสอบพื้นที่ปฏิบัติงานก่อนเริ่มงาน","จัดเก็บเครื่องมือ/สายไฟให้เป็นระเบียบ ไม่กีดขวางทางเดิน","สวมใส่ PPE พื้นฐานให้ครบตามที่กำหนด"] },
+  hotwork:    { risk:5, items:["เคลียร์วัสดุติดไฟง่ายในรัศมี 10 เมตรรอบจุดปฏิบัติงาน","เตรียมถังดับเพลิงประจำจุดปฏิบัติงาน","ติดตั้งผ้าใบ/ฉากกันประกายไฟ","ตรวจวัดก๊าซไวไฟก่อนเริ่มงาน (Gas Test)","จัดให้มีผู้เฝ้าระวังไฟ (Fire Watch) ตลอดเวลาปฏิบัติงาน","สวม PPE ป้องกันประกายไฟและแสง UV ครบถ้วน"] },
+  confined:   { risk:5, items:["ตรวจวัดบรรยากาศในที่อับอากาศก่อนเข้า (O2 / แก๊สพิษ / แก๊สไวไฟ)","จัดให้มีผู้เฝ้าหน้างาน (Attendant) ตลอดเวลาที่มีคนอยู่ข้างใน","มีระบบสื่อสารระหว่างผู้ปฏิบัติงานกับผู้เฝ้าหน้างาน","เตรียมอุปกรณ์ช่วยเหลือ/ดึงตัวออกกรณีฉุกเฉิน","ระบายอากาศ (Ventilation) ก่อนและระหว่างปฏิบัติงาน","ตัดแยกพลังงาน/ล็อกวาล์วที่เกี่ยวข้องก่อนเข้าไปทำงาน"] },
+  height:     { risk:4, items:["ตรวจสอบสภาพนั่งร้าน/บันได/จุดยึดก่อนใช้งาน","สวมเข็มขัดนิรภัยและคล้องสายรัดกับจุดยึดที่มั่นคง","กั้นเขตด้านล่างพื้นที่ทำงานบนที่สูง","ตรวจสอบสภาพอากาศ (ลม/ฝน) ก่อนเริ่มงาน","ไม่วางเครื่องมือ/วัสดุเสี่ยงตกหล่นโดยไม่มีการยึด"] },
+  electrical: { risk:4, items:["ตัดแยกวงจรไฟฟ้าและติดป้าย LOTO (Lock Out Tag Out)","ตรวจสอบแรงดันไฟฟ้าเป็นศูนย์ก่อนปฏิบัติงาน (Zero Energy Check)","ใช้เครื่องมือ/อุปกรณ์ที่มีฉนวนป้องกันไฟฟ้า","สวมถุงมือ/รองเท้าป้องกันไฟฟ้าตามมาตรฐาน","มีผู้ควบคุมงานที่มีความรู้ด้านไฟฟ้าอยู่ประจำหน้างาน"] },
+  excavation: { risk:3, items:["ตรวจสอบแนวท่อ/สายไฟใต้ดินก่อนขุด","ป้องกันดินถล่ม (ค้ำยัน/ลาดเอียงขอบหลุม) สำหรับหลุมลึก","กั้นเขตและติดป้ายเตือนรอบพื้นที่ขุด","จัดเตรียมทางขึ้น-ลงที่ปลอดภัยสำหรับหลุมลึก"] },
+  chemical:   { risk:4, items:["ตรวจสอบ SDS (Safety Data Sheet) ของสารเคมีที่เกี่ยวข้อง","สวม PPE ป้องกันสารเคมีเฉพาะตามชนิดสาร","เตรียมอุปกรณ์ล้างตา/ฝักบัวฉุกเฉินใกล้จุดปฏิบัติงาน","มีแผนรองรับกรณีสารเคมีหกรั่วไหล"] },
+  lifting:    { risk:3, items:["ตรวจสอบสภาพเครน/สลิง/อุปกรณ์ยกก่อนใช้งาน","คำนวณน้ำหนักที่ยกไม่เกินพิกัดที่กำหนด","กั้นเขตใต้แนวยกและห้ามคนเดินผ่าน","มีผู้ให้สัญญาณ (Signal Man) ที่ได้รับมอบหมาย"] },
+  rotating:   { risk:3, items:["ล็อก/ตัดแยกพลังงานเครื่องจักรก่อนปฏิบัติงาน (LOTO)","ติดตั้งการ์ดป้องกันจุดหมุน/จุดหนีบก่อนเริ่มเดินเครื่อง","สวมใส่ PPE ที่รัดกุม ไม่มีส่วนหลวมที่อาจถูกม้วนพัน","แจ้งเตือนผู้ปฏิบัติงานรอบข้างก่อนทดสอบเดินเครื่อง"] },
+  other:      { risk:2, items:["ประเมินความเสี่ยงเฉพาะของงานเพิ่มเติมตามลักษณะงานจริง","สวม PPE ตามความเสี่ยงที่ประเมินได้"] }
+};
+
+const RISK_LEVELS = {
+  low:    {label:"ต่ำ",      color:"var(--success)", bg:"var(--success-bg)"},
+  medium: {label:"ปานกลาง",  color:"var(--accent)",  bg:"var(--accent-bg)"},
+  high:   {label:"สูง",      color:"var(--danger)",  bg:"var(--danger-bg)"}
+};
+
+// รวมรายการควบคุมความเสี่ยงจากทุกประเภทงานที่เลือก (ไม่ซ้ำ) แล้วคำนวณระดับความเสี่ยงที่เหลือจากสัดส่วนที่ติ๊กแล้ว
+function computeRiskAssessment(typeIds, checkedKeys){
+  const relevantTypes = (typeIds && typeIds.length) ? typeIds : ["general"];
+  const items = [];
+  const seen = new Set();
+  let baseRisk = 1;
+  relevantTypes.forEach(id=>{
+    const def = JSA_CHECKLIST_BY_TYPE[id];
+    if(!def) return;
+    baseRisk = Math.max(baseRisk, def.risk);
+    def.items.forEach(text=>{
+      const key = id + "::" + text;
+      if(!seen.has(key)){ seen.add(key); items.push({key, text, typeId:id}); }
+    });
+  });
+  const checkedSet = new Set(checkedKeys||[]);
+  const total = items.length;
+  const checkedCount = items.filter(it=>checkedSet.has(it.key)).length;
+  const ratio = total ? checkedCount/total : 0;
+  // ติ๊กครบมาตรการควบคุมช่วยลดความเสี่ยงที่เหลือได้มาก แต่ไม่มีทางเป็นศูนย์ (งานยังมีความเสี่ยงโดยธรรมชาติอยู่)
+  const residual = baseRisk * (1 - ratio*0.65);
+  let level = "low";
+  if(residual >= 3.2) level = "high";
+  else if(residual >= 1.6) level = "medium";
+  const missing = items.filter(it=>!checkedSet.has(it.key));
+  return { items, total, checkedCount, ratio, level, missing, baseRisk };
+}
+
+const STAGE_ORDER = ["area_owner","jp","manager","approved"];
+const STAGE_LABEL = {area_owner:"เจ้าของพื้นที่", jp:"จป. (เจ้าหน้าที่ความปลอดภัย)", manager:"ผู้จัดการ", approved:"อนุมัติเสร็จสิ้น", rejected:"ไม่อนุมัติ"};
+
+const ROLES = [
+  {id:"contractor", label:"ผู้รับเหมา / ผู้ขอ Permit"},
+  {id:"area_owner", label:"เจ้าของพื้นที่"},
+  {id:"jp", label:"จป. (เจ้าหน้าที่ความปลอดภัย)"},
+  {id:"manager", label:"ผู้จัดการ"},
+  {id:"admin", label:"ผู้ดูแลระบบ (ตั้งค่า)"}
+];
+
+function defaultSettings(){ return { deptOwnerEmails:{}, jpEmails:[], managerEmails:[], companyDeptMap:{} }; }
+
+/* ---------------- state ---------------- */
+let state = {
+  route: "new",           // new | queue | all | settings
+  role: "contractor",
+  myEmail: "",
+  settings: defaultSettings(),
+  permits: [],
+  loading: true,
+  detailId: null,
+  toast: null,
+  storageAvailable: true,
+  lastSavedAt: null,
+  lastLoadedAt: null,
+};
+
+function setState(patch){ state = {...state, ...patch}; render(); }
+
+/* ---------------- storage ---------------- */
+async function loadAll(){
+  state.storageAvailable = SUPABASE_URL ? true : (typeof window.storage !== "undefined" && window.storage !== null);
+
+  if(state.storageAvailable && SUPABASE_URL){
+    // รวมการอ่านข้อมูลตอนเปิดแอปเป็นคำขอเดียว (ดึงทุกแถวที่ต้องใช้จาก kv_store ในทีเดียว)
+    try{
+      const resp = await fetchWithRetry(
+        `${SUPABASE_URL}/rest/v1/kv_store?key=in.(wp:settings,wp:permits,wp:myEmail,wp:myRole)&select=key,value`,
+        { headers: sbHeaders() }
+      );
+      const rows = await resp.json();
+      const map = {};
+      rows.forEach(r=>{ map[r.key] = r.value; });
+      state.storageAvailable = true;
+
+      try{
+        const parsed = map["wp:settings"] ? JSON.parse(map["wp:settings"]) : null;
+        state.settings = parsed ? migrateSettings(parsed) : defaultSettings();
+      }catch(e){ state.settings = defaultSettings(); }
+
+      try{ state.permits = map["wp:permits"] ? JSON.parse(map["wp:permits"]) : []; }catch(e){ state.permits = []; }
+
+      if(map["wp:myEmail"]) state.myEmail = map["wp:myEmail"];
+      if(!roleSetFromUrl && map["wp:myRole"] && ROLES.some(r=>r.id===map["wp:myRole"])) state.role = map["wp:myRole"];
+    }catch(e){
+      state.storageAvailable = false;
+      state.settings = defaultSettings();
+      state.permits = [];
+    }
+  } else if(state.storageAvailable){
+    // กรณีไม่มี SUPABASE_URL แต่อยู่ในอาร์ติแฟกต์ที่มี window.storage ให้ใช้เส้นทางเดิม (ทีละ key ได้ เพราะเร็วอยู่แล้ว ไม่ผ่านเครือข่าย)
+    try{
+      const s = await storageAdapter.get("wp:settings", true);
+      const parsed = s ? JSON.parse(s.value) : null;
+      state.settings = parsed ? migrateSettings(parsed) : defaultSettings();
+    }catch(e){ state.settings = defaultSettings(); }
+    try{
+      const p = await storageAdapter.get("wp:permits", true);
+      state.permits = p ? JSON.parse(p.value) : [];
+    }catch(e){ state.permits = []; }
+    try{
+      const em = await storageAdapter.get("wp:myEmail", false);
+      if(em && em.value) state.myEmail = em.value;
+    }catch(e){ /* ยังไม่เคยบันทึกอีเมล — ไม่เป็นไร */ }
+    if(!roleSetFromUrl){
+      try{
+        const rl = await storageAdapter.get("wp:myRole", false);
+        if(rl && rl.value && ROLES.some(r=>r.id===rl.value)) state.role = rl.value;
+      }catch(e){ /* ยังไม่เคยบันทึกบทบาท — ไม่เป็นไร */ }
+    }
+  } else {
+    state.settings = defaultSettings();
+    state.permits = [];
+  }
+
+  state.lastLoadedAt = new Date().toISOString();
+  state.loading = false;
+  render();
+}
+function saveMyEmail(email){
+  storageAdapter.set("wp:myEmail", email, false).catch(()=>{});
+}
+function saveMyRole(role){
+  storageAdapter.set("wp:myRole", role, false).catch(()=>{});
+}
+async function saveSettings(){
+  try{ await storageAdapter.set("wp:settings", JSON.stringify(state.settings), true); state.lastSavedAt = new Date().toISOString(); }
+  catch(e){ showToast("บันทึกการตั้งค่าไม่สำเร็จ — ดูคำแนะนำเรื่องพื้นที่จัดเก็บข้อมูลด้านล่าง"); }
+}
+async function savePermits(){
+  try{ await storageAdapter.set("wp:permits", JSON.stringify(state.permits), true); state.lastSavedAt = new Date().toISOString(); }
+  catch(e){ showToast("บันทึกข้อมูลไม่สำเร็จ ลองอีกครั้ง"); }
+}
+
+function showToast(msg){ setState({toast: msg}); setTimeout(()=>{ if(state.toast===msg) setState({toast:null}); }, 4200); }
+
+/* ---------------- settings helpers ---------------- */
+function toEmailArray(v){
+  if(Array.isArray(v)) return v.map(x=>String(x).trim()).filter(Boolean);
+  if(typeof v==="string") return v.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);
+  return [];
+}
+function migrateSettings(raw){
+  const out = defaultSettings();
+  const deptSrc = raw.deptOwnerEmails || raw.deptOwnerEmail || {};
+  DEPARTMENTS.forEach(d=>{ out.deptOwnerEmails[d] = toEmailArray(deptSrc[d]); });
+  out.jpEmails = toEmailArray(raw.jpEmails || raw.jpEmail);
+  out.managerEmails = toEmailArray(raw.managerEmails || raw.managerEmail);
+  const companyMapSrc = raw.companyDeptMap || {};
+  CONTRACTOR_COMPANIES.forEach(c=>{
+    const d = companyMapSrc[c];
+    out.companyDeptMap[c] = (d && DEPARTMENTS.includes(d)) ? d : "";
+  });
+  return out;
+}
+
+/* ---------------- notifications (real email via Gmail MCP, falls back to logged simulation) ---------------- */
+async function notifyStage(permit, stageKey){
+  const recipients = recipientsForStage(permit, stageKey);
+  if(recipients.length===0){
+    permit.notifications.push({stage:stageKey, to:"(ไม่ได้ตั้งค่าอีเมล)", sentAt:new Date().toISOString(), status:"missing_email"});
+    return;
+  }
+  const photoLinks = getRelevantPhotosForStage(permit, stageKey);
+  const subject = `[Work Permit ${permit.code}] รออนุมัติจากท่าน - แผนก ${permit.department}`;
+  const body = `เรียน ผู้อนุมัติ (${STAGE_LABEL[stageKey]})\n\n`+
+    `มีใบขออนุญาตทำงานฉบับใหม่รอการอนุมัติจากท่าน\n\n`+
+    `เลขที่ใบขออนุญาต: ${permit.code}\n`+
+    `ผู้รับเหมา: ${permit.contractor.company} (${permit.contractor.contactName}, โทร ${permit.contractor.phone})\n`+
+    `แผนก/พื้นที่: ${permit.department}\n`+
+    `สถานที่ปฏิบัติงาน: ${permit.location}\n`+
+    `ลักษณะงาน: ${permit.workDescription}\n`+
+    `ประเภทงาน: ${permit.permitTypes.map(t=>PERMIT_TYPES.find(p=>p.id===t)?.label||t).join(", ")}\n`+
+    `วันที่ปฏิบัติงาน: ${permit.startDate} ${permit.startTime} ถึง ${permit.endDate} ${permit.endTime}\n`+
+    `จำนวนขั้นตอนใน JSA: ${(permit.jsa||[]).length} ขั้นตอน\n`+
+    (photoLinks.length ? `\nรูปถ่ายหน้างาน:\n${photoLinks.join("\n")}\n` : '') +
+    `\nกรุณาเข้าสู่ระบบ Work Permit เพื่อพิจารณาอนุมัติ`;
+
+  for(const recipient of recipients){
+    if(API_BASE){
+      // โฮสต์เอง: ส่งอีเมลจริงผ่าน Google Apps Script (MailApp) โดยตรง ไม่ต้องพึ่ง Claude
+      try{
+        const resp = await fetchWithRetry(API_BASE, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" }, // หลีกเลี่ยง CORS preflight เช่นเดียวกับ storageAdapter.set
+          body: JSON.stringify({
+            action: "notify", to: recipient, subject, body,
+            link: getAppBaseUrl() + `?permit=${encodeURIComponent(permit.id)}&role=${encodeURIComponent(stageKey)}`
+          })
+        });
+        const data = await resp.json();
+        permit.notifications.push({stage:stageKey, to:recipient, sentAt:new Date().toISOString(), status: data.ok ? "sent" : "failed", error: data.error || null});
+      }catch(e){
+        permit.notifications.push({stage:stageKey, to:recipient, sentAt:new Date().toISOString(), status:"failed", error: String(e)});
+      }
+      continue;
+    }
+    // ใช้งานอยู่ในอาร์ติแฟกต์ของ Claude: ลองส่งผ่าน Gmail ที่เชื่อมต่อไว้
+    try{
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-6",
+          max_tokens:1000,
+          messages:[{role:"user", content:`ส่งอีเมลถึง ${recipient} หัวข้อ "${subject}" เนื้อหาดังนี้:\n\n${body}\n\nกรุณาใช้เครื่องมือส่งอีเมลของ Gmail ที่มีอยู่เพื่อส่งอีเมลนี้จริง ๆ ตอบกลับสั้น ๆ ว่าส่งสำเร็จหรือไม่`}],
+          mcp_servers:[{type:"url", url:"https://gmailmcp.googleapis.com/mcp/v1", name:"gmail-mcp"}]
+        })
+      });
+      const data = await resp.json();
+      const usedTool = (data.content||[]).some(b=>b.type==="mcp_tool_use");
+      permit.notifications.push({stage:stageKey, to:recipient, sentAt:new Date().toISOString(), status: usedTool ? "sent" : "simulated"});
+    }catch(e){
+      permit.notifications.push({stage:stageKey, to:recipient, sentAt:new Date().toISOString(), status:"simulated"});
+    }
+  }
+}
+
+function recipientsForStage(permit, stageKey){
+  if(stageKey==="area_owner") return state.settings.deptOwnerEmails[permit.department] || [];
+  if(stageKey==="jp") return state.settings.jpEmails || [];
+  if(stageKey==="manager") return state.settings.managerEmails || [];
+  return [];
+}
+
+function sitePhotosOf(permit){
+  return (permit.sitePhotos && permit.sitePhotos.length) ? permit.sitePhotos : (permit.sitePhoto ? [permit.sitePhoto] : []);
+}
+function approvalPhotosOf(a){
+  return (a.photos && a.photos.length) ? a.photos : (a.photo ? [a.photo] : []);
+}
+function getRelevantPhotosForStage(permit, stageKey){
+  if(stageKey==="area_owner") return sitePhotosOf(permit);
+  const withPhoto = [...permit.approvals].reverse().find(a=>approvalPhotosOf(a).length);
+  return withPhoto ? approvalPhotosOf(withPhoto) : sitePhotosOf(permit);
+}
+
+/* ---------------- helpers ---------------- */
+const MAX_PHOTOS = 3;
+async function filesToDataUrls(fileList, max){
+  max = max || MAX_PHOTOS;
+  const files = Array.from(fileList).slice(0, max);
+  const out = [];
+  for(const f of files){ out.push(await resizeImage(f)); }
+  return out;
+}
+function genCode(){
+  const d = new Date();
+  const ymd = d.getFullYear().toString()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  const n = state.permits.filter(p=>p.code.includes(ymd)).length + 1;
+  return `WP-${ymd}-${String(n).padStart(3,'0')}`;
+}
+function resizeImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 900;
+        const scale = Math.min(1, maxW/img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width*scale; canvas.height = img.height*scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg',0.72));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+function badgeForStatus(status){
+  if(status==="approved") return `<span class="badge badge-success">อนุมัติแล้ว</span>`;
+  if(status==="rejected") return `<span class="badge badge-danger">ไม่อนุมัติ</span>`;
+  return `<span class="badge badge-accent">รอ ${STAGE_LABEL[status]}</span>`;
+}
+function pendingCountFor(role, email){
+  return state.permits.filter(p=>{
+    if(p.status==="approved"||p.status==="rejected") return false;
+    if(role==="admin") return true;
+    if(p.status!==role) return false;
+    if(!email) return true;
+    const req = recipientsForStage(p, role).map(e=>e.toLowerCase());
+    return req.length===0 || req.includes(email.toLowerCase());
+  }).length;
+}
+
+/* ---------------- actions ---------------- */
+async function createPermit(form){
+  const permit = {
+    id: 'p'+Date.now()+Math.random().toString(36).slice(2,7),
+    code: genCode(),
+    createdAt: new Date().toISOString(),
+    contractor: {company:form.company, contactName:form.contactName, phone:form.phone},
+    department: form.department,
+    location: form.location,
+    workDescription: form.workDescription,
+    startDate: form.startDate, endDate: form.endDate, startTime: form.startTime, endTime: form.endTime,
+    permitTypes: form.permitTypes, otherTypeNote: form.otherTypeNote,
+    workerCount: form.workerCount, ppe: form.ppe, hazards: form.hazards,
+    jsa: form.jsa || [],
+    sitePhotos: form.sitePhotos || [],
+    riskAssessment: form.riskAssessment || null,
+    status: "area_owner",
+    approvals: [],
+    notifications: []
+  };
+  state.permits.unshift(permit);
+  await savePermits();
+  await notifyStage(permit, "area_owner");
+  await savePermits();
+  showToast(`สร้างใบขออนุญาต ${permit.code} แล้ว — แจ้งเตือนเจ้าของพื้นที่แผนก ${permit.department}`);
+  setState({route:"all", detailId:permit.id});
+}
+
+async function decide(permit, decision, comment, photos){
+  const stage = permit.status;
+  permit.approvals.push({
+    stage, approverEmail: state.myEmail || (recipientsForStage(permit,stage)[0]) || "(ไม่ระบุ)",
+    decision, comment: comment||"", photos: photos||[], at: new Date().toISOString()
+  });
+  if(decision==="rejected"){
+    permit.status = "rejected";
+  }else{
+    const idx = STAGE_ORDER.indexOf(stage);
+    const next = STAGE_ORDER[idx+1];
+    permit.status = next;
+    if(next!=="approved"){
+      await notifyStage(permit, next);
+    }
+  }
+  await savePermits();
+  showToast(decision==="rejected" ? `ไม่อนุมัติใบ ${permit.code}` : (permit.status==="approved" ? `ใบ ${permit.code} อนุมัติครบทุกขั้นตอนแล้ว` : `อนุมัติขั้นตอนนี้แล้ว — แจ้งเตือน ${STAGE_LABEL[permit.status]} ต่อไป`));
+  render();
+}
+
+async function deletePermit(permitId){
+  state.permits = state.permits.filter(p=>p.id!==permitId);
+  await savePermits();
+  showToast("ลบใบขออนุญาตนี้แล้ว");
+  setState({detailId:null});
+}
+
+/* ---------------- JSA row helpers ---------------- */
+function jsaRowHtml(step, hazard, control){
+  return `<tr>
+    <td class="jsaNum">1</td>
+    <td><input type="text" class="jsa-input" data-jsa="step" value="${step||''}" placeholder="เช่น ปีนบันไดขึ้นถังผสม"></td>
+    <td><input type="text" class="jsa-input" data-jsa="hazard" value="${hazard||''}" placeholder="เช่น พลัดตกจากที่สูง"></td>
+    <td><input type="text" class="jsa-input" data-jsa="control" value="${control||''}" placeholder="เช่น ใช้สายรัดนิรภัยคล้องจุดยึด"></td>
+    <td><button type="button" class="jsaRemove" title="ลบแถว">×</button></td>
+  </tr>`;
+}
+function renumberJsa(tbody){
+  Array.from(tbody.children).forEach((tr,i)=>{ const n=tr.querySelector('.jsaNum'); if(n) n.textContent = i+1; });
+}
+
+/* ---------------- render ---------------- */
+function el(html){ const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstElementChild; }
+
+function render(){
+  const root = document.getElementById('root');
+  if(state.loading){ root.innerHTML = `<div class="empty">กำลังโหลดข้อมูล...</div>`; return; }
+
+  const myPendingCount = pendingCountFor(state.role, state.myEmail);
+  const nav = [
+    {id:"new", label:"สร้างใบขออนุญาตใหม่"},
+    {id:"queue", label:"รออนุมัติของฉัน", count: (state.role==="contractor")?null:myPendingCount},
+    {id:"all", label:"ใบอนุญาตทั้งหมด", count: state.permits.length},
+    {id:"dashboard", label:"แดชบอร์ด"},
+    {id:"settings", label:"ตั้งค่าอีเมลผู้อนุมัติ"},
+  ];
+
+  root.innerHTML = `
+  ${state.storageAvailable ? '' : `<div class="storage-warn">⚠ เชื่อมต่อฐานข้อมูลไม่ได้ในขณะนี้ — ข้อมูลที่กรอกจะ<strong>อยู่เฉพาะหน้าจอนี้เท่านั้นและหายเมื่อปิด/รีเฟรช</strong> ลองรีเฟรชหน้าใหม่อีกครั้ง หรือดูรายละเอียดในเมนู "ตั้งค่าอีเมลผู้อนุมัติ" ด้านล่าง</div>`}
+  <div class="app">
+    <div class="sidebar">
+      <div class="brand">
+        <div class="brand-row"><img src="${LOGO_DATA_URL}" alt="Mitr Lao" class="brand-logo"><span>ระบบขออนุญาตทำงาน</span></div>
+        <small>Work Permit Online — บริษัท น้ำตาลมิตรลาว จำกัด</small>
+      </div>
+      <nav>
+        ${nav.map(n=>`<button class="nav-item ${state.route===n.id?'active':''}" data-nav="${n.id}">${n.label}${n.count!=null?`<span class="count">${n.count}</span>`:''}</button>`).join('')}
+      </nav>
+      <div class="identity-box">
+        <label>บทบาทของฉัน (จำลอง)</label>
+        <select id="roleSelect">${ROLES.map(r=>`<option value="${r.id}" ${state.role===r.id?'selected':''}>${r.label}</option>`).join('')}</select>
+        <label>อีเมลของฉัน (สำหรับกรองรายการรออนุมัติ)</label>
+        <input id="myEmailInput" type="text" placeholder="name@company.com" value="${state.myEmail}">
+      </div>
+    </div>
+    <div class="main" id="mainArea"></div>
+  </div>
+  ${state.toast?`<div class="toast">${state.toast}</div>`:''}
+  ${state.detailId && state.permits.some(p=>p.id===state.detailId) ? renderModalWrap() : ''}
+  `;
+  if(state.detailId && !state.permits.some(p=>p.id===state.detailId) && !state.loading){
+    state.detailId = null;
+    setTimeout(()=>showToast("ไม่พบใบอนุญาตตามลิงก์ที่เปิดมา (อาจถูกลบไปแล้ว หรือข้อมูลยังโหลดไม่ทัน) — ลองรีเฟรชหน้านี้อีกครั้ง หรือดูรายการทั้งหมดด้านซ้าย"), 0);
+  }
+
+  document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>setState({route:b.dataset.nav}));
+  document.getElementById('roleSelect').onchange = e=>{ setState({role:e.target.value}); saveMyRole(e.target.value); };
+  document.getElementById('myEmailInput').onchange = e=>{ const v = e.target.value.trim(); setState({myEmail:v}); saveMyEmail(v); };
+
+  const main = document.getElementById('mainArea');
+  if(state.route==="new") main.appendChild(renderNewForm());
+  else if(state.route==="queue") main.appendChild(renderQueue());
+  else if(state.route==="all") main.appendChild(renderAll());
+  else if(state.route==="dashboard") main.appendChild(renderDashboard());
+  else if(state.route==="settings") main.appendChild(renderSettings());
+
+  if(state.detailId){
+    const permit = state.permits.find(p=>p.id===state.detailId);
+    if(permit) mountDetail(permit);
+  }
+}
+
+function renderModalWrap(){ return `<div class="modal-bg" id="modalBg"><div class="modal" id="modalInner"></div></div>`; }
+
+/* ---- New permit form ---- */
+function renderNewForm(){
+  const wrap = el(`<div>
+    <div class="pagehead"><div><h1>สร้างใบขออนุญาตทำงาน</h1><p>เมื่อบันทึก ระบบจะแจ้งเตือนไปยังเจ้าของพื้นที่ตามแผนกที่เลือกโดยอัตโนมัติ</p></div></div>
+    <div class="notice">ลำดับการอนุมัติ: เจ้าของพื้นที่ (พร้อมแนบรูปภาพ) → จป. → ผู้จัดการ → อนุมัติเสร็จสิ้น</div>
+    <form id="permitForm">
+      <div class="card">
+        <h3 style="margin-top:0;font-size:15px;">ข้อมูลผู้รับเหมา / ผู้ขออนุญาต</h3>
+        <div class="grid3">
+          <div class="field"><label>ชื่อบริษัท <span class="req">*</span></label>
+            <select required name="company" id="companySelect"><option value="" disabled selected>เลือกบริษัท</option>${CONTRACTOR_COMPANIES.map(c=>`<option value="${c}">${c}</option>`).join('')}<option value="${OTHER_COMPANY_VALUE}">อื่นๆ (ระบุเอง)</option></select>
+          </div>
+          <div class="field"><label>ชื่อผู้ติดต่อ <span class="req">*</span></label><input required name="contactName" type="text"></div>
+          <div class="field"><label>เบอร์โทรศัพท์ <span class="req">*</span></label><input required name="phone" type="text"></div>
+        </div>
+        <div class="field" id="companyOtherField" style="display:none;"><label>ระบุชื่อบริษัท <span class="req">*</span></label><input type="text" name="companyOther" id="companyOtherInput" placeholder="พิมพ์ชื่อบริษัทที่ไม่มีในรายการ"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0;font-size:15px;">รายละเอียดงาน</h3>
+        <div class="grid2">
+          <div class="field"><label>แผนก / เจ้าของพื้นที่ <span class="req">*</span></label>
+            <select required name="department" id="departmentSelect"><option value="" disabled selected>เลือกแผนก</option>${DEPARTMENTS.map(d=>`<option value="${d}">${d}</option>`).join('')}</select>
+          </div>
+          <div class="field"><label>สถานที่ปฏิบัติงาน <span class="req">*</span></label><input required name="location" type="text" placeholder="เช่น อาคารลูกหีบ ชั้น 2"></div>
+        </div>
+        <div class="field"><label>ลักษณะงานที่ปฏิบัติ <span class="req">*</span></label><textarea required name="workDescription" placeholder="อธิบายงานที่จะดำเนินการโดยละเอียด"></textarea></div>
+        <div class="grid2">
+          <div class="field"><label>วันที่ – เวลาเริ่มงาน <span class="req">*</span></label>
+            <div style="display:flex;gap:8px;"><input required name="startDate" type="date" style="flex:1;"><input required name="startTime" type="time" style="flex:1;"></div>
+          </div>
+          <div class="field"><label>วันที่ – เวลาสิ้นสุดงาน <span class="req">*</span></label>
+            <div style="display:flex;gap:8px;"><input required name="endDate" type="date" style="flex:1;"><input required name="endTime" type="time" style="flex:1;"></div>
+          </div>
+        </div>
+        <div class="field"><label>จำนวนผู้ปฏิบัติงาน</label><input name="workerCount" type="number" min="1" placeholder="จำนวนคน"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0;font-size:15px;">ประเภทงาน (เลือกได้มากกว่า 1)</h3>
+        <div class="checkgrid">${PERMIT_TYPES.map(t=>`<label class="checkrow"><input type="checkbox" name="permitTypes" value="${t.id}"> ${t.label}</label>`).join('')}</div>
+        <div class="field" style="margin-top:8px;"><label>รายละเอียดเพิ่มเติม (กรณีเลือก "อื่นๆ")</label><input name="otherTypeNote" type="text"></div>
+      </div>
+      <div class="card" id="riskCard">
+        <h3 style="margin-top:0;font-size:15px;">ประเมินความเสี่ยงและรายการควบคุม (Risk Assessment)</h3>
+        <p class="hint" style="margin-top:0;margin-bottom:10px;">ระบบแนะนำรายการควบคุมความเสี่ยงตามประเภทงานที่เลือกไว้ด้านบนโดยอัตโนมัติ ติ๊กรายการที่ทำจริงหน้างาน เพื่อประเมินระดับความเสี่ยงที่เหลืออยู่</p>
+        <div id="riskChecklistItems"></div>
+        <div id="riskSummary" style="margin-top:12px;"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0;font-size:15px;">รูปถ่ายหน้างาน</h3>
+        <div class="field"><label>ถ่ายรูปหน้างานก่อนเริ่มงาน <span class="req">*</span></label>
+          <input required id="sitePhotoInput" type="file" accept="image/*" capture="environment" multiple>
+          <div class="hint">แนบรูปสภาพพื้นที่ ณ ขณะยื่นขออนุญาต ได้สูงสุด 3 รูป ใช้ประกอบการพิจารณาของเจ้าของพื้นที่</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0;font-size:15px;">อุปกรณ์ป้องกันภัยส่วนบุคคล (PPE)</h3>
+        <div class="checkgrid">${PPE_LIST.map(p=>`<label class="checkrow"><input type="checkbox" name="ppe" value="${p}"> ${p}</label>`).join('')}</div>
+        <div class="field" style="margin-top:8px;"><label>อันตราย/ความเสี่ยงที่ต้องระวังเป็นพิเศษ</label><textarea name="hazards" placeholder="เช่น พื้นที่อับอากาศ, ของร้อน, ไฟฟ้าแรงสูง"></textarea></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0;font-size:15px;">JSA — วิเคราะห์งานเพื่อความปลอดภัย (Job Safety Analysis)</h3>
+        <p class="hint" style="margin-top:0;margin-bottom:10px;">แตกงานออกเป็นขั้นตอนย่อย ระบุอันตรายและมาตรการควบคุมของแต่ละขั้นตอน อย่างน้อย 1 แถว <span class="req">*</span></p>
+        <table id="jsaTable">
+          <thead><tr><th style="width:30px;">#</th><th>ขั้นตอนการทำงาน</th><th>อันตรายที่อาจเกิดขึ้น</th><th>มาตรการป้องกัน/ควบคุม</th><th style="width:30px;"></th></tr></thead>
+          <tbody id="jsaBody">${jsaRowHtml()}</tbody>
+        </table>
+        <button type="button" class="btn btn-outline btn-sm" id="addJsaRow" style="margin-top:8px;">+ เพิ่มขั้นตอน</button>
+      </div>
+      <button class="btn btn-primary" type="submit">บันทึกและส่งขออนุมัติ</button>
+    </form>
+  </div>`);
+
+  const jsaBody = wrap.querySelector('#jsaBody');
+  wrap.querySelector('#addJsaRow').onclick = ()=>{
+    jsaBody.insertAdjacentHTML('beforeend', jsaRowHtml());
+    renumberJsa(jsaBody);
+  };
+  jsaBody.addEventListener('click', (e)=>{
+    if(e.target.classList.contains('jsaRemove')){
+      if(jsaBody.children.length>1){ e.target.closest('tr').remove(); renumberJsa(jsaBody); }
+      else{ showToast("ต้องมี JSA อย่างน้อย 1 ขั้นตอน"); }
+    }
+  });
+
+  /* ---- Risk assessment checklist: สร้างใหม่ทุกครั้งที่เปลี่ยนประเภทงาน หรือติ๊ก/ยกเลิกติ๊กรายการ ---- */
+  const riskCheckedKeys = new Set();
+  const riskItemsEl = wrap.querySelector('#riskChecklistItems');
+  const riskSummaryEl = wrap.querySelector('#riskSummary');
+  function currentSelectedTypeIds(){
+    return Array.from(wrap.querySelectorAll('input[name="permitTypes"]:checked')).map(c=>c.value);
+  }
+  function renderRiskChecklist(){
+    const typeIds = currentSelectedTypeIds();
+    const assessment = computeRiskAssessment(typeIds, riskCheckedKeys);
+    if(!typeIds.length){
+      riskItemsEl.innerHTML = `<p class="hint" style="margin:0;">เลือก "ประเภทงาน" ด้านบนก่อน ระบบจะแนะนำรายการควบคุมความเสี่ยงที่เกี่ยวข้องให้อัตโนมัติ</p>`;
+      riskSummaryEl.innerHTML = '';
+      return;
+    }
+    riskItemsEl.innerHTML = assessment.items.map(it=>`
+      <label class="checkrow" style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;">
+        <input type="checkbox" data-risk-key="${it.key.replace(/"/g,'&quot;')}" ${riskCheckedKeys.has(it.key)?'checked':''} style="margin-top:3px;">
+        <span>${it.text}</span>
+      </label>
+    `).join('');
+    const rl = RISK_LEVELS[assessment.level];
+    const pct = Math.round(assessment.ratio*100);
+    let suggestionHtml = '';
+    if(assessment.missing.length){
+      suggestionHtml = `<div style="margin-top:10px;padding:10px 12px;background:var(--accent-bg);border-radius:var(--radius);">
+        <strong style="font-size:13px;">ข้อแนะนำเพิ่มเติม — ยังไม่ได้ติ๊ก ${assessment.missing.length} รายการ:</strong>
+        <ul style="margin:6px 0 0;padding-left:20px;font-size:13px;">
+          ${assessment.missing.map(m=>`<li>${m.text}</li>`).join('')}
+        </ul>
+      </div>`;
+    }else{
+      suggestionHtml = `<div style="margin-top:10px;padding:10px 12px;background:var(--success-bg);border-radius:var(--radius);font-size:13px;">
+        <strong>ติ๊กครบทุกรายการควบคุมความเสี่ยงที่แนะนำแล้ว</strong>
+      </div>`;
+    }
+    riskSummaryEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="padding:4px 10px;border-radius:20px;font-size:12.5px;font-weight:600;background:${rl.bg};color:${rl.color};">ระดับความเสี่ยง: ${rl.label}</span>
+        <span style="font-size:12.5px;color:var(--ink-muted);">ติ๊กครบ ${assessment.checkedCount} จาก ${assessment.total} รายการ (${pct}%)</span>
+      </div>
+      ${suggestionHtml}
+    `;
+  }
+  wrap.querySelectorAll('input[name="permitTypes"]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{ riskCheckedKeys.clear(); renderRiskChecklist(); });
+  });
+  riskItemsEl.addEventListener('change', (e)=>{
+    const key = e.target.getAttribute('data-risk-key');
+    if(!key) return;
+    if(e.target.checked) riskCheckedKeys.add(key); else riskCheckedKeys.delete(key);
+    renderRiskChecklist();
+  });
+  renderRiskChecklist();
+
+  const companySelect = wrap.querySelector('#companySelect');
+  const companyOtherField = wrap.querySelector('#companyOtherField');
+  const companyOtherInput = wrap.querySelector('#companyOtherInput');
+  const departmentSelect = wrap.querySelector('#departmentSelect');
+  companySelect.onchange = ()=>{
+    const val = companySelect.value;
+    if(val===OTHER_COMPANY_VALUE){
+      companyOtherField.style.display = '';
+      companyOtherInput.required = true;
+    }else{
+      companyOtherField.style.display = 'none';
+      companyOtherInput.required = false;
+      companyOtherInput.value = '';
+      // เด้งไปเลือกแผนกให้อัตโนมัติตามที่ตั้งค่าไว้ในหน้า "ตั้งค่าอีเมลผู้อนุมัติ" (ถ้ามีการกำหนดไว้สำหรับบริษัทนี้)
+      const mappedDept = (state.settings.companyDeptMap||{})[val];
+      if(mappedDept) departmentSelect.value = mappedDept;
+    }
+  };
+
+  wrap.querySelector('#permitForm').onsubmit = async (e)=>{
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const permitTypes = f.getAll('permitTypes');
+    const ppe = f.getAll('ppe');
+    if(permitTypes.length===0){ showToast("กรุณาเลือกประเภทงานอย่างน้อย 1 รายการ"); return; }
+    const companyVal = f.get('company');
+    if(!companyVal){ showToast("กรุณาเลือกบริษัท"); return; }
+    const company = companyVal===OTHER_COMPANY_VALUE ? f.get('companyOther').trim() : companyVal;
+    if(!company){ showToast("กรุณาระบุชื่อบริษัท"); return; }
+    const jsa = Array.from(jsaBody.querySelectorAll('tr')).map(tr=>({
+      step: tr.querySelector('[data-jsa="step"]').value.trim(),
+      hazard: tr.querySelector('[data-jsa="hazard"]').value.trim(),
+      control: tr.querySelector('[data-jsa="control"]').value.trim(),
+    })).filter(r=>r.step || r.hazard || r.control);
+    if(jsa.length===0){ showToast("กรุณากรอกข้อมูล JSA อย่างน้อย 1 ขั้นตอน"); return; }
+    const sitePhotoInput = wrap.querySelector('#sitePhotoInput');
+    if(!sitePhotoInput.files.length){ showToast("กรุณาแนบรูปถ่ายหน้างานอย่างน้อย 1 รูปก่อนส่งขออนุมัติ"); return; }
+    if(sitePhotoInput.files.length>MAX_PHOTOS){ showToast(`แนบรูปได้ไม่เกิน ${MAX_PHOTOS} รูป`); return; }
+    const submitBtn = wrap.querySelector('#permitForm button[type=submit]');
+    submitBtn.disabled = true; submitBtn.textContent = "กำลังอัปโหลดรูปภาพ...";
+    let sitePhotos;
+    try{
+      const rawPhotos = await filesToDataUrls(sitePhotoInput.files);
+      sitePhotos = await uploadPhotosAndGetUrls(rawPhotos, "site_" + Date.now());
+    }catch(e){
+      showToast("อัปโหลดรูปภาพไม่สำเร็จ ลองอีกครั้ง");
+      submitBtn.disabled = false; submitBtn.textContent = "บันทึกและส่งขออนุมัติ";
+      return;
+    }
+    submitBtn.textContent = "กำลังบันทึก...";
+    const riskAssessment = computeRiskAssessment(permitTypes, riskCheckedKeys);
+    createPermit({
+      company, contactName:f.get('contactName'), phone:f.get('phone'),
+      department:f.get('department'), location:f.get('location'), workDescription:f.get('workDescription'),
+      startDate:f.get('startDate'), startTime:f.get('startTime'), endDate:f.get('endDate'), endTime:f.get('endTime'),
+      workerCount:f.get('workerCount'), permitTypes, otherTypeNote:f.get('otherTypeNote'), ppe, hazards:f.get('hazards'),
+      jsa, sitePhotos,
+      riskAssessment: { level: riskAssessment.level, checkedCount: riskAssessment.checkedCount, total: riskAssessment.total, ratio: riskAssessment.ratio, items: riskAssessment.items.map(it=>({ text: it.text, checked: riskCheckedKeys.has(it.key) })) }
+    });
+  };
+  return wrap;
+}
+
+/* ---- Queue (my pending approvals) ---- */
+function renderQueue(){
+  const list = state.permits.filter(p=>{
+    if(p.status==="approved"||p.status==="rejected") return false;
+    if(state.role==="admin") return true;
+    if(p.status!==state.role) return false;
+    const req = recipientsForStage(p, state.role).map(e=>e.toLowerCase());
+    if(!state.myEmail) return true;
+    return req.length===0 || req.includes(state.myEmail.toLowerCase());
+  });
+  const wrap = el(`<div><div class="pagehead"><div><h1>รายการรออนุมัติของฉัน</h1><p>แสดงใบขออนุญาตที่รอการอนุมัติในขั้นตอนของบทบาทที่เลือก</p></div></div></div>`);
+  if(state.role==="contractor"){
+    wrap.appendChild(el(`<div class="empty"><h3>บทบาทนี้ไม่มีคิวอนุมัติ</h3><p>เปลี่ยนบทบาทเป็นเจ้าของพื้นที่ / จป. / ผู้จัดการ เพื่อดูรายการที่รอท่านอนุมัติ</p></div>`));
+    return wrap;
+  }
+  if(list.length===0){
+    wrap.appendChild(el(`<div class="empty"><h3>ไม่มีรายการรออนุมัติ</h3><p>ยังไม่มีใบขออนุญาตที่รอการอนุมัติจากท่านในขณะนี้</p></div>`));
+    return wrap;
+  }
+  wrap.appendChild(buildTable(list));
+  return wrap;
+}
+
+/* ---- All permits ---- */
+function renderAll(){
+  const wrap = el(`<div><div class="pagehead"><div><h1>ใบอนุญาตทำงานทั้งหมด</h1><p>ประวัติและสถานะใบขออนุญาตทำงานทั้งหมดในระบบ</p></div></div></div>`);
+  if(state.permits.length===0){
+    wrap.appendChild(el(`<div class="empty"><h3>ยังไม่มีใบขออนุญาต</h3><p>เริ่มต้นด้วยการสร้างใบขออนุญาตทำงานใหม่จากเมนูด้านซ้าย</p></div>`));
+    return wrap;
+  }
+  wrap.appendChild(buildTable(state.permits));
+  return wrap;
+}
+
+function buildTable(list){
+  const table = el(`<div class="card" style="padding:0;overflow:hidden;"><table>
+    <thead><tr><th>เลขที่</th><th>แผนก</th><th>ผู้รับเหมา</th><th>ลักษณะงาน</th><th>วันที่ปฏิบัติงาน</th><th>สถานะ</th></tr></thead>
+    <tbody>${list.map(p=>`<tr class="clickable" data-id="${p.id}">
+      <td class="code-tag">${p.code}</td>
+      <td>${p.department}</td>
+      <td>${p.contractor.company}</td>
+      <td style="max-width:220px;">${p.workDescription.slice(0,60)}${p.workDescription.length>60?'…':''}</td>
+      <td>${p.startDate}</td>
+      <td>${badgeForStatus(p.status)}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`);
+  table.querySelectorAll('tr.clickable').forEach(tr=>tr.onclick=()=>setState({detailId:tr.dataset.id}));
+  return table;
+}
+
+/* ---- Dashboard ---- */
+function permitDurationHours(p){
+  try{
+    const start = new Date(`${p.startDate}T${p.startTime}`);
+    const end = new Date(`${p.endDate}T${p.endTime}`);
+    const diffMs = end - start;
+    if(isNaN(diffMs) || diffMs<=0) return 0;
+    return diffMs / 3600000;
+  }catch(e){ return 0; }
+}
+function permitLaborHours(p){
+  const workers = Number(p.workerCount) || 0;
+  return workers * permitDurationHours(p);
+}
+function formatHours(h){
+  return h.toLocaleString('th-TH', {maximumFractionDigits:1});
+}
+
+function renderDashboard(){
+  const wrap = el(`<div><div class="pagehead"><div><h1>แดชบอร์ด</h1><p>สรุปภาพรวมใบขออนุญาตทำงานทั้งหมด แยกตามแผนกและผู้รับเหมา</p></div></div></div>`);
+  const permits = state.permits;
+  if(permits.length===0){
+    wrap.appendChild(el(`<div class="empty"><h3>ยังไม่มีข้อมูลใบขออนุญาต</h3><p>แดชบอร์ดจะแสดงผลเมื่อมีการสร้างใบขออนุญาตอย่างน้อย 1 ใบ</p></div>`));
+    return wrap;
+  }
+
+  const total = permits.length;
+  const approved = permits.filter(p=>p.status==="approved").length;
+  const rejected = permits.filter(p=>p.status==="rejected").length;
+  const pending = total - approved - rejected;
+  // "มิตรลาว" เป็นหนึ่งในตัวเลือกช่องผู้รับเหมา หมายถึงพนักงานภายในเปิดงานเอง — แยกกลุ่มนี้ออกจากผู้รับเหมาภายนอกจริงๆ
+  const mitrLaoPermits = permits.filter(p=>((p.contractor && p.contractor.company)||"").trim()==="มิตรลาว");
+  const contractorPermits = permits.filter(p=>((p.contractor && p.contractor.company)||"").trim()!=="มิตรลาว");
+  const totalLaborHours = permits.reduce((sum,p)=>sum+permitLaborHours(p), 0);
+  const mitrLaoHours = mitrLaoPermits.reduce((sum,p)=>sum+permitLaborHours(p), 0);
+  const contractorHours = contractorPermits.reduce((sum,p)=>sum+permitLaborHours(p), 0);
+
+  wrap.appendChild(el(`
+    <div class="grid4" style="margin-bottom:10px;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px;">ใบขออนุญาตทั้งหมด</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:32px;">${total}</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px;">รออนุมัติ</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:32px;color:var(--accent);">${pending}</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px;">อนุมัติแล้ว</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:32px;color:var(--success);">${approved}</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px;">ชั่วโมงการทำงานรวม (คน-ชม.)</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:32px;">${formatHours(totalLaborHours)}</div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-bottom:10px;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px;">ชั่วโมงพนักงานมิตรลาว (คน-ชม.)</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:26px;">${formatHours(mitrLaoHours)}</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px;color:var(--ink-muted);margin-bottom:6px;">ชั่วโมงผู้รับเหมาภายนอก (คน-ชม.)</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:26px;">${formatHours(contractorHours)}</div>
+      </div>
+    </div>
+  `));
+
+  if(rejected>0){
+    wrap.appendChild(el(`<div class="card" style="margin-bottom:16px;">
+      <div style="font-size:13px;">ไม่อนุมัติ: <strong style="color:var(--danger);">${rejected}</strong> ใบ</div>
+    </div>`));
+  }
+
+  wrap.appendChild(buildBreakdownCard("พนักงานมิตรลาว — แยกตามแผนก", mitrLaoPermits, p=>p.department));
+  wrap.appendChild(buildBreakdownCard("ผู้รับเหมาภายนอก — แยกตามบริษัท", contractorPermits, p=>(p.contractor && p.contractor.company) || "(ไม่ระบุ)"));
+
+  return wrap;
+}
+
+function buildBreakdownCard(title, permits, keyFn){
+  if(!permits.length){
+    return el(`<div class="card"><h3 style="margin-top:0;font-size:15px;">${title}</h3><p class="hint" style="margin:0;">ยังไม่มีข้อมูลในกลุ่มนี้</p></div>`);
+  }
+  const groups = {};
+  permits.forEach(p=>{
+    const key = keyFn(p) || "(ไม่ระบุ)";
+    if(!groups[key]) groups[key] = {total:0, approved:0, rejected:0, pending:0, hours:0};
+    groups[key].total++;
+    groups[key].hours += permitLaborHours(p);
+    if(p.status==="approved") groups[key].approved++;
+    else if(p.status==="rejected") groups[key].rejected++;
+    else groups[key].pending++;
+  });
+  const rows = Object.entries(groups).sort((a,b)=>b[1].total-a[1].total);
+  const maxTotal = Math.max(...rows.map(r=>r[1].total));
+  const CHART_H = 180; // ความสูงพื้นที่กราฟ (ไม่รวมตัวเลขด้านบน/ป้ายชื่อด้านล่าง)
+
+  const wrap = el(`<div class="card">
+    <h3 style="margin-top:0;font-size:15px;">${title}</h3>
+    <div style="display:flex;align-items:flex-end;gap:20px;height:${CHART_H}px;padding:24px 4px 0;overflow-x:auto;" id="barChart"></div>
+    <div style="display:flex;gap:14px;font-size:12px;color:var(--ink-muted);margin-top:10px;">
+      <span><span style="display:inline-block;width:9px;height:9px;background:var(--success);border-radius:2px;margin-right:4px;"></span>อนุมัติแล้ว</span>
+      <span><span style="display:inline-block;width:9px;height:9px;background:var(--accent);border-radius:2px;margin-right:4px;"></span>รออนุมัติ</span>
+      <span><span style="display:inline-block;width:9px;height:9px;background:var(--danger);border-radius:2px;margin-right:4px;"></span>ไม่อนุมัติ</span>
+    </div>
+  </div>`);
+  const chartWrap = wrap.querySelector('#barChart');
+  rows.forEach(([key, g])=>{
+    const barH = Math.max((g.total/maxTotal)*CHART_H, 6);
+    const hApproved = g.total ? (g.approved/g.total)*barH : 0;
+    const hPending  = g.total ? (g.pending/g.total)*barH  : 0;
+    const hRejected = g.total ? (g.rejected/g.total)*barH : 0;
+    chartWrap.appendChild(el(`
+      <div style="display:flex;flex-direction:column;align-items:center;flex:0 0 auto;align-self:flex-end;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:4px;">${g.total}</div>
+        <div style="width:40px;display:flex;flex-direction:column-reverse;border-radius:3px 3px 0 0;overflow:hidden;">
+          <div style="height:${hApproved}px;background:var(--success);" title="อนุมัติแล้ว ${g.approved}"></div>
+          <div style="height:${hPending}px;background:var(--accent);" title="รออนุมัติ ${g.pending}"></div>
+          <div style="height:${hRejected}px;background:var(--danger);" title="ไม่อนุมัติ ${g.rejected}"></div>
+        </div>
+        <div style="font-size:11px;color:var(--ink-muted);margin-top:8px;text-align:center;max-width:74px;line-height:1.3;">${key}</div>
+        <div style="font-size:10px;color:var(--ink-muted);margin-top:2px;text-align:center;">${formatHours(g.hours)} คน-ชม.</div>
+      </div>
+    `));
+  });
+  return wrap;
+}
+
+/* ---- Settings ---- */
+function renderSettings(){
+  const wrap = el(`<div>
+    <div class="pagehead"><div><h1>ตั้งค่าอีเมลผู้อนุมัติ</h1><p>กำหนดอีเมลเจ้าของพื้นที่ของแต่ละแผนก, จป. และผู้จัดการ — ใส่ได้หลายคนต่อแผนก (เช่น 2-3 คน) โดยคั่นด้วยจุลภาค ระบบจะแจ้งเตือนทุกคนที่ใส่ไว้ และใครก็ได้ในรายชื่อสามารถกดอนุมัติแทนกันได้</p></div></div>
+
+    <div class="card" style="${state.storageAvailable?'':'border-color:#E3C1B3;background:var(--danger-bg);'}">
+      <h3 style="margin-top:0;font-size:15px;">ข้อมูลจัดเก็บที่ไหน</h3>
+      <p style="margin:0 0 8px;">
+        สถานะพื้นที่จัดเก็บตอนนี้: ${state.storageAvailable ? '<span class="badge badge-success">ใช้งานได้ปกติ</span>' : '<span class="badge badge-danger">ใช้งานไม่ได้ในขณะนี้</span>'}
+        ${state.lastSavedAt ? ` · บันทึกล่าสุด ${new Date(state.lastSavedAt).toLocaleString('th-TH')}` : ''}
+      </p>
+      <p style="margin:0 0 8px;">ระบบนี้บันทึกข้อมูลลง<strong>ฐานข้อมูล Supabase</strong> (การตั้งค่า + ใบขออนุญาตทั้งหมด) และเก็บรูปภาพไว้ที่ <strong>Supabase Storage</strong> — เข้าจากอุปกรณ์ไหนก็เห็นข้อมูลเดียวกัน ไม่ผูกกับเครื่องหรือเบราว์เซอร์ที่ใช้</p>
+      ${state.storageAvailable ? '' : `<p style="margin:0;"><strong>ถ้าใช้งานไม่ได้ชั่วคราว:</strong> อาจเป็นเพราะเน็ตหลุดหรือ Supabase ตอบช้าผิดปกติ ลองรีเฟรชหน้าใหม่อีกครั้ง ข้อมูลที่เคยบันทึกไว้แล้วจะยังอยู่ครบ ไม่หายไปไหน</p>`}
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;font-size:15px;">สำรอง / กู้คืนข้อมูล</h3>
+      <p class="hint" style="margin-top:0;">ถึงแม้ข้อมูลจะเก็บอยู่ใน Supabase อยู่แล้ว แนะนำให้ดาวน์โหลดสำรองเก็บไว้เป็นระยะ (การตั้งค่าอีเมล + ใบอนุญาตทำงานทุกใบ) เก็บไว้เป็นไฟล์ .json และนำกลับเข้าระบบได้ทุกเมื่อ</p>
+      <div class="backup-row">
+        <button type="button" class="btn btn-outline btn-sm" id="exportBtn">⬇ ดาวน์โหลดข้อมูลสำรอง</button>
+        <label class="btn btn-outline btn-sm" style="margin:0;">⬆ นำเข้าข้อมูลสำรอง<input type="file" id="importInput" accept="application/json" style="display:none;"></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;font-size:15px;">รายการข้อมูลที่จัดเก็บ (Data Dictionary)</h3>
+      <table class="datadict">
+        <thead><tr><th>คีย์ข้อมูล</th><th>ขอบเขต</th><th>เนื้อหาที่เก็บ</th></tr></thead>
+        <tbody>
+          <tr><td><code>wp:settings</code></td><td>ใช้ร่วมกันทุกคน</td><td>อีเมลเจ้าของพื้นที่รายแผนก, อีเมล จป., อีเมลผู้จัดการ, แผนกเริ่มต้นตามบริษัทผู้รับเหมา</td></tr>
+          <tr><td><code>wp:permits</code></td><td>ใช้ร่วมกันทุกคน</td><td>ใบขออนุญาตทำงานทุกใบ — ข้อมูลผู้รับเหมา, แผนก, JSA, PPE, รูปถ่ายหน้างาน, ประวัติการอนุมัติ, ประวัติการแจ้งเตือนอีเมล</td></tr>
+        </tbody>
+      </table>
+      <p class="hint">ปัจจุบันมีใบอนุญาตทำงานสะสมอยู่ ${state.permits.length} ใบ ในระบบ</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;font-size:15px;">อีเมลเจ้าของพื้นที่ ตามแผนก</h3>
+      <div id="deptEmailGrid">
+        ${DEPARTMENTS.map(d=>`<div class="field"><label>${d}</label><input type="text" data-dept="${d}" placeholder="เช่น somchai@company.com, wipa@company.com, kai@company.com" value="${(state.settings.deptOwnerEmails[d]||[]).join(', ')}"></div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-size:15px;">แผนกเริ่มต้นตามบริษัทผู้รับเหมา</h3>
+      <p class="hint" style="margin-top:0;">เมื่อผู้ขออนุญาตเลือกบริษัทในแบบฟอร์ม ระบบจะเลือกแผนกนี้ให้อัตโนมัติ (เลือก "ไม่กำหนด" ได้หากไม่ต้องการให้เด้งอัตโนมัติ ผู้ใช้ยังเลือกแผนกเองได้เสมอ)</p>
+      <div id="companyDeptGrid" class="grid2">
+        ${CONTRACTOR_COMPANIES.map(c=>`<div class="field"><label>${c}</label>
+          <select data-company="${c}">
+            <option value="">— ไม่กำหนด —</option>
+            ${DEPARTMENTS.map(d=>`<option value="${d}" ${(state.settings.companyDeptMap||{})[c]===d?'selected':''}>${d}</option>`).join('')}
+          </select>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-size:15px;">อีเมลผู้อนุมัติกลาง</h3>
+      <div class="grid2">
+        <div class="field"><label>อีเมล จป. (เจ้าหน้าที่ความปลอดภัย)</label><input type="text" id="jpEmailInput" placeholder="คั่นด้วยจุลภาคถ้ามีหลายคน" value="${(state.settings.jpEmails||[]).join(', ')}"></div>
+        <div class="field"><label>อีเมลผู้จัดการ</label><input type="text" id="managerEmailInput" placeholder="คั่นด้วยจุลภาคถ้ามีหลายคน" value="${(state.settings.managerEmails||[]).join(', ')}"></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="saveSettingsBtn">บันทึกการตั้งค่า</button>
+    <div class="hint" style="margin-top:10px;">หมายเหตุ: การแจ้งเตือนจะพยายามส่งอีเมลจริงผ่าน Gmail ที่เชื่อมต่อไว้ให้ทุกคนในรายชื่อ หากไม่สามารถส่งได้ ระบบจะบันทึกเป็นรายการแจ้งเตือน (จำลอง) แทน โดยดูได้ในหน้ารายละเอียดของแต่ละใบอนุญาต</div>
+  </div>`);
+
+  wrap.querySelector('#exportBtn').onclick = ()=>{
+    const payload = JSON.stringify({exportedAt:new Date().toISOString(), settings: state.settings, permits: state.permits}, null, 2);
+    const blob = new Blob([payload], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `work-permit-backup-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showToast("ดาวน์โหลดไฟล์สำรองข้อมูลแล้ว");
+  };
+  wrap.querySelector('#importInput').onchange = async (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    try{
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if(!data.settings || !data.permits) throw new Error("invalid file");
+      if(!confirm(`นำเข้าข้อมูลจากไฟล์สำรอง (ใบอนุญาต ${data.permits.length} ใบ) จะเขียนทับข้อมูลปัจจุบันทั้งหมด ยืนยันหรือไม่?`)) return;
+      state.settings = migrateSettings(data.settings);
+      state.permits = data.permits;
+      await saveSettings();
+      await savePermits();
+      showToast("นำเข้าข้อมูลสำรองเรียบร้อย");
+      render();
+    }catch(err){
+      showToast("ไฟล์ไม่ถูกต้อง ไม่สามารถนำเข้าข้อมูลได้");
+    }
+  };
+  wrap.querySelector('#saveSettingsBtn').onclick = async ()=>{
+    document.querySelectorAll('[data-dept]').forEach(inp=>{ state.settings.deptOwnerEmails[inp.dataset.dept] = toEmailArray(inp.value); });
+    state.settings.jpEmails = toEmailArray(document.getElementById('jpEmailInput').value);
+    state.settings.managerEmails = toEmailArray(document.getElementById('managerEmailInput').value);
+    const companyDeptMap = {};
+    document.querySelectorAll('[data-company]').forEach(sel=>{ companyDeptMap[sel.dataset.company] = sel.value; });
+    state.settings.companyDeptMap = companyDeptMap;
+    await saveSettings();
+    showToast(state.storageAvailable ? "บันทึกการตั้งค่าเรียบร้อย" : "บันทึกไว้ในหน้าจอนี้แล้ว แต่จะหายเมื่อปิด — ดูวิธีแก้ด้านบน หรือดาวน์โหลดสำรองไว้ก่อน");
+    render();
+  };
+  return wrap;
+}
+
+/* ---- Detail modal ---- */
+function mountDetail(permit){
+  const bg = document.getElementById('modalBg');
+  const inner = document.getElementById('modalInner');
+  bg.onclick = (e)=>{ if(e.target===bg) setState({detailId:null}); };
+
+  const stageIdx = STAGE_ORDER.indexOf(permit.status);
+  const steps = STAGE_ORDER.map((s,i)=>{
+    let cls = 'step';
+    if(permit.status==='rejected'){
+      cls += (i < permit.approvals.length) ? ' rejected' : '';
+    } else if(i < stageIdx) cls += ' done';
+    else if(i === stageIdx) cls += ' current';
+    return `<div class="${cls}"><div class="dot">${i+1}</div>${STAGE_LABEL[s]}</div>`;
+  }).join('');
+
+  const canAct = permit.status!=='approved' && permit.status!=='rejected' && (state.role===permit.status || state.role==='admin');
+  const typesLabel = permit.permitTypes.map(t=>PERMIT_TYPES.find(p=>p.id===t)?.label||t).join(', ');
+
+  inner.innerHTML = `
+    <button class="modal-close" id="closeModal">×</button>
+    <h2 style="margin:0 0 3px;font-size:19px;">ใบขออนุญาตทำงาน <span class="code-tag">${permit.code}</span></h2>
+    <p style="color:var(--ink-muted);margin:0 0 16px;font-size:12.5px;">สร้างเมื่อ ${new Date(permit.createdAt).toLocaleString('th-TH')}</p>
+    <div class="stepper">${steps}</div>
+    ${permit.status==='rejected' ? `<div class="notice" style="background:var(--danger-bg);color:var(--danger);border-color:#E3C1B3;">ใบขออนุญาตนี้ถูกปฏิเสธ</div>` : ''}
+    ${permit.status==='approved' ? `<div class="notice" style="background:var(--success-bg);color:var(--success);border-color:#BEDCC7;">อนุมัติครบทุกขั้นตอนแล้ว พร้อมเริ่มปฏิบัติงาน</div>` : ''}
+
+    <div style="margin-bottom:14px;">
+      <div class="grid2">
+        <div><strong>ผู้รับเหมา:</strong> ${permit.contractor.company}<br><span style="color:var(--ink-muted);">${permit.contractor.contactName} · ${permit.contractor.phone}</span></div>
+        <div><strong>แผนก:</strong> ${permit.department}<br><strong>สถานที่:</strong> ${permit.location}</div>
+      </div>
+    </div>
+    <p><strong>ลักษณะงาน:</strong> ${permit.workDescription}</p>
+    <p><strong>ประเภทงาน:</strong> ${typesLabel}${permit.otherTypeNote?` — ${permit.otherTypeNote}`:''}</p>
+    <p><strong>วันเวลาปฏิบัติงาน:</strong> ${permit.startDate} ${permit.startTime} — ${permit.endDate} ${permit.endTime}</p>
+    ${permit.workerCount?`<p><strong>จำนวนผู้ปฏิบัติงาน:</strong> ${permit.workerCount} คน</p>`:''}
+    ${permit.ppe && permit.ppe.length?`<p><strong>PPE:</strong> ${permit.ppe.join(', ')}</p>`:''}
+    ${permit.hazards?`<p><strong>ความเสี่ยง:</strong> ${permit.hazards}</p>`:''}
+    ${sitePhotosOf(permit).length?`<div style="margin:10px 0;"><strong>รูปถ่ายหน้างาน (ตอนยื่นขอ):</strong><br><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">${sitePhotosOf(permit).map(p=>`<img src="${p}" style="max-width:260px;border-radius:var(--radius);border:1px solid var(--line);">`).join('')}</div></div>`:''}
+
+    <h3 style="font-size:14px;margin:18px 0 4px;">JSA — วิเคราะห์งานเพื่อความปลอดภัย</h3>
+    ${(permit.jsa && permit.jsa.length) ? `<table class="jsa-view-table" style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+      <thead><tr><th style="width:26px;">#</th><th>ขั้นตอนการทำงาน</th><th>อันตราย</th><th>มาตรการควบคุม</th></tr></thead>
+      <tbody>${permit.jsa.map((r,i)=>`<tr><td>${i+1}</td><td>${r.step||'-'}</td><td>${r.hazard||'-'}</td><td>${r.control||'-'}</td></tr>`).join('')}</tbody>
+    </table>` : `<p class="hint">ไม่มีข้อมูล JSA</p>`}
+
+    ${permit.riskAssessment ? (()=>{
+      const ra = permit.riskAssessment;
+      const rl = RISK_LEVELS[ra.level] || RISK_LEVELS.medium;
+      const missing = (ra.items||[]).filter(it=>!it.checked);
+      const pct = ra.total ? Math.round(ra.ratio*100) : 0;
+      return `<h3 style="font-size:14px;margin:18px 0 4px;">ประเมินความเสี่ยง (Risk Assessment)</h3>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+          <span style="padding:4px 10px;border-radius:20px;font-size:12.5px;font-weight:600;background:${rl.bg};color:${rl.color};">ระดับความเสี่ยง: ${rl.label}</span>
+          <span style="font-size:12.5px;color:var(--ink-muted);">ติ๊กครบ ${ra.checkedCount} จาก ${ra.total} รายการ (${pct}%)</span>
+        </div>
+        ${missing.length ? `<div style="padding:10px 12px;background:var(--accent-bg);border-radius:var(--radius);margin-bottom:14px;">
+          <strong style="font-size:13px;">ข้อแนะนำเพิ่มเติม — ยังไม่ได้ติ๊ก ${missing.length} รายการตอนยื่นขอ:</strong>
+          <ul style="margin:6px 0 0;padding-left:20px;font-size:13px;">${missing.map(m=>`<li>${m.text}</li>`).join('')}</ul>
+        </div>` : `<p class="hint" style="margin-bottom:14px;">ติ๊กครบทุกรายการควบคุมความเสี่ยงที่แนะนำแล้วตอนยื่นขอ</p>`}`;
+    })() : ''}
+
+    <h3 style="font-size:14px;margin:18px 0 4px;">ประวัติการอนุมัติ</h3>
+    <div class="approval-log">
+      ${permit.approvals.length===0?'<p class="hint">ยังไม่มีการอนุมัติ</p>':permit.approvals.map(a=>`
+        <div class="approval-entry">
+          <div class="who">${STAGE_LABEL[a.stage]} — ${a.decision==='approved'?'<span style="color:var(--success)">อนุมัติ</span>':'<span style="color:var(--danger)">ไม่อนุมัติ</span>'}</div>
+          <div class="meta">${a.approverEmail} · ${new Date(a.at).toLocaleString('th-TH')}</div>
+          ${a.comment?`<p>${a.comment}</p>`:''}
+          ${approvalPhotosOf(a).length?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">${approvalPhotosOf(a).map(p=>`<img src="${p}" style="max-width:220px;border-radius:var(--radius);border:1px solid var(--line);">`).join('')}</div>`:''}
+        </div>`).join('')}
+    </div>
+
+    <h3 style="font-size:14px;margin:18px 0 4px;">ประวัติการแจ้งเตือนอีเมล</h3>
+    ${permit.notifications.length===0?'<p class="hint">ยังไม่มีการแจ้งเตือน</p>':`<ul style="font-size:12.5px;color:var(--ink-muted);padding-left:18px;margin:0 0 14px;">
+      ${permit.notifications.map(n=>`<li>ถึง ${n.to} (${STAGE_LABEL[n.stage]}) — ${n.status==='sent'?'ส่งอีเมลแล้ว':(n.status==='missing_email'?'ไม่ได้ตั้งค่าอีเมล':(n.status==='failed'?'ส่งไม่สำเร็จ (เช็คการตั้งค่า Apps Script)':'บันทึกเป็นแจ้งเตือน (จำลอง)'))} · ${new Date(n.sentAt).toLocaleString('th-TH')}${n.error?`<br><span style="color:var(--danger);">รายละเอียด: ${n.error}</span>`:''}</li>`).join('')}
+    </ul>`}
+
+    ${canAct ? `
+    <div class="card" style="margin-top:10px;background:#FAFAF8;">
+      <h3 style="margin-top:0;font-size:14px;">การพิจารณาของท่าน (${STAGE_LABEL[permit.status]})</h3>
+      <div class="field"><label>ความคิดเห็น</label><textarea id="decisionComment" placeholder="หมายเหตุ (ถ้ามี)"></textarea></div>
+      ${permit.status==='area_owner' ? `<div class="field"><label>ถ่ายรูปหน้างานเพื่อยืนยันการตรวจสอบ <span class="req">*</span> (จำเป็นสำหรับการอนุมัติของเจ้าของพื้นที่ แนบได้สูงสุด ${MAX_PHOTOS} รูป)</label><input type="file" id="decisionPhoto" accept="image/*" capture="environment" multiple></div>` : ''}
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="btn btn-success" id="approveBtn">อนุมัติ</button>
+        <button class="btn btn-danger" id="rejectBtn">ไม่อนุมัติ</button>
+      </div>
+    </div>` : ''}
+    ${state.role==='admin' ? `
+    <div class="card" style="margin-top:10px;border-color:#E3C1B3;">
+      <h3 style="margin-top:0;font-size:14px;color:var(--danger);">โซนอันตราย (สำหรับผู้ดูแลระบบ)</h3>
+      <p class="hint" style="margin-top:0;">ใช้สำหรับลบข้อมูลทดสอบที่ค้างอยู่ การลบไม่สามารถกู้คืนได้</p>
+      <button type="button" class="btn btn-danger" id="deletePermitBtn">🗑 ลบใบขออนุญาตนี้ทิ้ง</button>
+    </div>` : ''}
+  `;
+
+  inner.querySelector('#closeModal').onclick = ()=>setState({detailId:null});
+
+  const deleteBtn = inner.querySelector('#deletePermitBtn');
+  if(deleteBtn){
+    deleteBtn.onclick = async ()=>{
+      if(!confirm(`ยืนยันลบใบขออนุญาต ${permit.code} ทิ้งอย่างถาวร?\n(การลบนี้กู้คืนไม่ได้)`)) return;
+      await deletePermit(permit.id);
+    };
+  }
+
+  if(canAct){
+    let decisionBusy = false;
+    const approveBtn = inner.querySelector('#approveBtn');
+    const rejectBtn = inner.querySelector('#rejectBtn');
+    approveBtn.onclick = async ()=>{
+      if(decisionBusy) return; // กันกดซ้ำเร็วเกินไปจนยิง request ซ้อนกัน ทำให้สถานะเพี้ยน
+      decisionBusy = true;
+      approveBtn.disabled = true; rejectBtn.disabled = true;
+      try{
+        const comment = inner.querySelector('#decisionComment').value.trim();
+        const photoInput = inner.querySelector('#decisionPhoto');
+        let photos = [];
+        if(permit.status==='area_owner'){
+          if(!photoInput.files.length){ showToast("กรุณาแนบรูปภาพอย่างน้อย 1 รูปก่อนอนุมัติ (ขั้นตอนเจ้าของพื้นที่)"); return; }
+          if(photoInput.files.length>MAX_PHOTOS){ showToast(`แนบรูปได้ไม่เกิน ${MAX_PHOTOS} รูป`); return; }
+          try{
+            const rawPhotos = await filesToDataUrls(photoInput.files);
+            photos = await uploadPhotosAndGetUrls(rawPhotos, "approval_" + Date.now());
+          }catch(e){
+            showToast("อัปโหลดรูปภาพไม่สำเร็จ ลองอีกครั้ง");
+            return;
+          }
+        }
+        await decide(permit, "approved", comment, photos);
+      } finally {
+        decisionBusy = false;
+        approveBtn.disabled = false; rejectBtn.disabled = false;
+      }
+    };
+    rejectBtn.onclick = async ()=>{
+      if(decisionBusy) return;
+      decisionBusy = true;
+      approveBtn.disabled = true; rejectBtn.disabled = true;
+      try{
+        const comment = inner.querySelector('#decisionComment').value.trim();
+        if(!comment){ showToast("กรุณาระบุเหตุผลที่ไม่อนุมัติ"); return; }
+        await decide(permit, "rejected", comment, null);
+      } finally {
+        decisionBusy = false;
+        approveBtn.disabled = false; rejectBtn.disabled = false;
+      }
+    };
+  }
+}
+
+let roleSetFromUrl = false;
+function applyDeepLinkFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const permitId = params.get("permit");
+  const roleParam = params.get("role");
+  if(roleParam && ROLES.some(r=>r.id===roleParam)){
+    state.role = roleParam;
+    roleSetFromUrl = true;
+  }
+  if(permitId){
+    state.route = "all";
+    state.detailId = permitId;
+  }
+}
+
+applyDeepLinkFromUrl();
+loadAll();
+</script>
+</body>
+</html>
