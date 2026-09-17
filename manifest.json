@@ -1,0 +1,17 @@
+{
+  "name": "Work Permit Online — บริษัท น้ำตาลมิตรลาว จำกัด",
+  "short_name": "Work Permit",
+  "description": "ระบบขออนุญาตทำงานออนไลน์ — บริษัท น้ำตาลมิตรลาว จำกัด",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#EEF1EF",
+  "theme_color": "#C98A1F",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
